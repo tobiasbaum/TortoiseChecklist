@@ -33,7 +33,10 @@ public abstract class ChecklistItemSource {
      * der Checklisten-Einträge festzulegen.
      */
     protected abstract List<? extends ChecklistItem> createChecklistItems(
-            final String wcRoot, final List<String> relativePaths, String commitComment) throws Exception;
+            final String wcRoot,
+            final List<String> relativePaths,
+            String commitComment,
+            PasswordManager passwords) throws Exception;
 
     /**
      * Liefert die Beschreibung, die während des Ladens angezeigt wird.
@@ -61,7 +64,10 @@ public abstract class ChecklistItemSource {
     }
 
     List<? extends ChecklistItem> checkFilterAndCreateChecklistItems(
-            final String wcRoot, final List<String> relativePaths, final String commitComment)
+            final String wcRoot,
+            final List<String> relativePaths,
+            final String commitComment,
+            final PasswordManager passwords)
         throws Exception {
         List<String> filteredPaths;
         if (this.withFiles == null) {
@@ -70,7 +76,7 @@ public abstract class ChecklistItemSource {
             filteredPaths = this.determineFilteredPaths(wcRoot, relativePaths);
         }
         if (this.filter == null || this.filter.matches(wcRoot, filteredPaths, commitComment)) {
-            return this.createChecklistItems(wcRoot, filteredPaths, commitComment);
+            return this.createChecklistItems(wcRoot, filteredPaths, commitComment, passwords);
         } else {
             return Collections.emptyList();
         }

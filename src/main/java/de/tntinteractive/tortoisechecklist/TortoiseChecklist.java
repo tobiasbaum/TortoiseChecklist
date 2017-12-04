@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +40,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import de.tntinteractive.tortoisechecklist.core.ChecklistPlugin;
+import de.tntinteractive.tortoisechecklist.core.ChecklistPluginWithPassword;
 import de.tntinteractive.tortoisechecklist.core.ChecklistScript;
+import de.tntinteractive.tortoisechecklist.core.PasswordManager;
 import de.tntinteractive.tortoisechecklist.core.SourceManager;
 import de.tntinteractive.tortoisechecklist.statistic.FileStatisticLogger;
 import de.tntinteractive.tortoisechecklist.statistic.NullLogger;
@@ -82,8 +85,12 @@ public class TortoiseChecklist {
 
             final SourceManager sources = new SourceManager();
             final Iterable<? extends ChecklistPlugin> plugins = loadPlugins();
+            final PasswordManager passwords = new PasswordManager();
             for (final ChecklistPlugin plugin : plugins) {
                 logger.log("activePlugin", plugin.getClass().getName());
+                if (plugin instanceof ChecklistPluginWithPassword) {
+                    registerPasswords(passwords, (ChecklistPluginWithPassword) plugin);
+                }
             }
             ChecklistScript.evaluate(loadGlobalConfigScript(wcRoot), plugins, sources);
             ChecklistScript.evaluate(loadPersonalConfigScript(wcRoot), plugins, sources);
@@ -101,7 +108,7 @@ public class TortoiseChecklist {
                 @Override
                 public void run() {
                     final ChecklistGui gui = new ChecklistGui(logger);
-                    sources.evaluateSources(wcRoot, paths, message, executor, gui);
+                    sources.evaluateSources(wcRoot, paths, message, executor, gui, passwords);
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
@@ -128,6 +135,14 @@ public class TortoiseChecklist {
             });
         } catch (final Throwable e) {
             handleException(e);
+        }
+    }
+
+    private static void registerPasswords(final PasswordManager passwords, final ChecklistPluginWithPassword plugin)
+            throws GeneralSecurityException, IOException {
+
+        for (final String passwordKey : plugin.getNeededPasswordKeys()) {
+            passwords.registerNeededPassword(passwordKey);
         }
     }
 

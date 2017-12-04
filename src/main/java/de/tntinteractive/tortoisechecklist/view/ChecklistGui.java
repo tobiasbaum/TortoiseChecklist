@@ -180,11 +180,20 @@ public class ChecklistGui extends JDialog implements QuestionView {
                 } else if (checkComponent instanceof JLabel) {
                     ret.add(((JLabel) checkComponent).getText());
                 } else {
-                    ret.add(((JTextPane) checkComponent).getText());
+                    ret.add(this.extractTextFromHtml(((JTextPane) checkComponent).getText()));
                 }
             }
         }
         return ret;
+    }
+
+    private String extractTextFromHtml(final String text) {
+        final int startPos = Math.max(text.indexOf("<b>"), 0);
+        int endPos = text.lastIndexOf("</b>");
+        if (endPos < 0) {
+            endPos = text.length();
+        }
+        return text.substring(startPos, endPos);
     }
 
     private void checkAndClose() {

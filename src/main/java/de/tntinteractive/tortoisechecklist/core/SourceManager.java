@@ -36,7 +36,7 @@ public class SourceManager {
     }
 
     public void evaluateSources(final String wcRoot, final List<String> relativePaths, final String commitComment,
-            final ExecutorService executor, final QuestionView resultTarget) {
+            final ExecutorService executor, final QuestionView resultTarget, final PasswordManager passwords) {
         for (final ChecklistItemSource source : this.sources) {
             final String id = resultTarget.addSource(source.getDescription());
             executor.execute(new Runnable() {
@@ -44,7 +44,8 @@ public class SourceManager {
                 public void run() {
                     final List<ChecklistItem> items = new ArrayList<>();
                     try {
-                        items.addAll(source.checkFilterAndCreateChecklistItems(wcRoot, relativePaths, commitComment));
+                        items.addAll(
+                                source.checkFilterAndCreateChecklistItems(wcRoot, relativePaths, commitComment, passwords));
                     } catch (final Throwable t) {
                         t.printStackTrace();
                         items.add(ChecklistItem.createViolation("Exception in Source " + source + ": " + t));

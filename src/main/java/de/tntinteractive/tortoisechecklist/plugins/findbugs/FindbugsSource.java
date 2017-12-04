@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import de.tntinteractive.tortoisechecklist.core.ChecklistItem;
 import de.tntinteractive.tortoisechecklist.core.ChecklistItemSource;
+import de.tntinteractive.tortoisechecklist.core.PasswordManager;
 import edu.umd.cs.findbugs.ClassScreener;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.FindBugs2;
@@ -86,8 +87,11 @@ public class FindbugsSource extends ChecklistItemSource {
     }
 
     @Override
-    protected List<? extends ChecklistItem> createChecklistItems(final String wcRoot, final List<String> relativePaths,
-            final String commitComment) throws Exception {
+    protected List<? extends ChecklistItem> createChecklistItems(
+            final String wcRoot,
+            final List<String> relativePaths,
+            final String commitComment,
+            final PasswordManager passwords) throws Exception {
 
         final Set<File> relevantBinDirs = new LinkedHashSet<>();
         final Set<String> classes = new LinkedHashSet<>();

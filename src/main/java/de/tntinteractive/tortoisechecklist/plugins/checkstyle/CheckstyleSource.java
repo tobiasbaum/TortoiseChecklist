@@ -50,6 +50,7 @@ import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 import de.tntinteractive.tortoisechecklist.core.ChecklistItem;
 import de.tntinteractive.tortoisechecklist.core.ChecklistItemSource;
+import de.tntinteractive.tortoisechecklist.core.PasswordManager;
 
 public class CheckstyleSource extends ChecklistItemSource {
 
@@ -70,7 +71,10 @@ public class CheckstyleSource extends ChecklistItemSource {
 
     @Override
     protected List<? extends ChecklistItem> createChecklistItems(
-            final String wcRoot, final List<String> relativePaths, final String commitComment)
+            final String wcRoot,
+            final List<String> relativePaths,
+            final String commitComment,
+            final PasswordManager passwords)
         throws CheckstyleException, ParserConfigurationException, SAXException, IOException, TransformerException {
 
         final Checker checker = new Checker();

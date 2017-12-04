@@ -23,6 +23,7 @@ import java.util.List;
 
 import de.tntinteractive.tortoisechecklist.core.ChecklistItem;
 import de.tntinteractive.tortoisechecklist.core.ChecklistItemSource;
+import de.tntinteractive.tortoisechecklist.core.PasswordManager;
 
 public class QuestionSource extends ChecklistItemSource {
 
@@ -39,7 +40,10 @@ public class QuestionSource extends ChecklistItemSource {
 
     @Override
     protected List<ChecklistItem> createChecklistItems(
-            final String wcRoot, final List<String> relativePaths, final String commitComment) {
+            final String wcRoot,
+            final List<String> relativePaths,
+            final String commitComment,
+            final PasswordManager passwords) {
         return Collections.singletonList(ChecklistItem.createQuestion(this.text));
     }
 

@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import de.tntinteractive.tortoisechecklist.core.ChecklistItem;
 import de.tntinteractive.tortoisechecklist.core.ChecklistScript;
+import de.tntinteractive.tortoisechecklist.core.PasswordManager;
 import de.tntinteractive.tortoisechecklist.core.SourceManager;
 
 public class ChecklistScriptTest {
@@ -48,7 +49,7 @@ public class ChecklistScriptTest {
         ChecklistScript.evaluate(script, Collections.singletonList(new BasicChecklistPlugin()), sourceManager);
         final ExecutorService e = new SynchronousExecutorService();
         final QuestionViewStub results = new QuestionViewStub();
-        sourceManager.evaluateSources("C:\\wcRoot", Arrays.asList(files), comment, e, results);
+        sourceManager.evaluateSources("C:\\wcRoot", Arrays.asList(files), comment, e, results, new PasswordManager());
         return results.getResults();
     }
 
