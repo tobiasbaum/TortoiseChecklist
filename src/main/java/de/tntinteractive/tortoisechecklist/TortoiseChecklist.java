@@ -57,7 +57,7 @@ public class TortoiseChecklist {
     public static void main(final String[] args) {
         if (args.length != 4) {
             JOptionPane.showMessageDialog(null, "Muss als TortoiseSVN client side hook aufgerufen werden");
-            System.exit(2);
+            System.exit(0);
         }
 
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
