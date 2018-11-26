@@ -27,7 +27,8 @@ public abstract class FileFilter extends ChecklistItemSourceFilter {
     }
 
     @Override
-    public final boolean matches(final String wcRoot, final List<String> relativePaths, final String commitComment) {
+    public final boolean matches(
+            final String wcRoot, final List<String> relativePaths, final String commitComment, final PasswordManager passwords) {
         for (final String path : relativePaths) {
             if (this.matches(wcRoot, path)) {
                 return true;

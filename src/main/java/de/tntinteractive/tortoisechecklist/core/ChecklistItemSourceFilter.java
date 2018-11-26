@@ -22,7 +22,8 @@ import java.util.List;
 
 public abstract class ChecklistItemSourceFilter {
 
-    public abstract boolean matches(String wcRoot, List<String> relativePaths, String commitComment);
+    public abstract boolean matches(
+            String wcRoot, List<String> relativePaths, String commitComment, PasswordManager passwords) throws Exception;
 
     public ChecklistItemSourceFilter or(final ChecklistItemSourceFilter f) {
         if (this instanceof FileFilter && f instanceof FileFilter) {

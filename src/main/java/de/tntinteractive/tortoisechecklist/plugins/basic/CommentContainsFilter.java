@@ -21,6 +21,7 @@ package de.tntinteractive.tortoisechecklist.plugins.basic;
 import java.util.List;
 
 import de.tntinteractive.tortoisechecklist.core.ChecklistItemSourceFilter;
+import de.tntinteractive.tortoisechecklist.core.PasswordManager;
 
 public class CommentContainsFilter extends ChecklistItemSourceFilter {
 
@@ -31,7 +32,8 @@ public class CommentContainsFilter extends ChecklistItemSourceFilter {
     }
 
     @Override
-    public boolean matches(final String wcRoot, final List<String> relativePaths, final String commitComment) {
+    public boolean matches(
+            final String wcRoot, final List<String> relativePaths, final String commitComment, final PasswordManager passwords) {
         return commitComment.toLowerCase().contains(this.text);
     }
 

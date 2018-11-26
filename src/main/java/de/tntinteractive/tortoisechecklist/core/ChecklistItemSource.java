@@ -75,7 +75,7 @@ public abstract class ChecklistItemSource {
         } else {
             filteredPaths = this.determineFilteredPaths(wcRoot, relativePaths);
         }
-        if (this.filter == null || this.filter.matches(wcRoot, filteredPaths, commitComment)) {
+        if (this.filter == null || this.filter.matches(wcRoot, filteredPaths, commitComment, passwords)) {
             return this.createChecklistItems(wcRoot, filteredPaths, commitComment, passwords);
         } else {
             return Collections.emptyList();

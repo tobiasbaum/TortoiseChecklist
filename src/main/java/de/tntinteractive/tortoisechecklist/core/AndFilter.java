@@ -31,9 +31,13 @@ public class AndFilter extends ChecklistItemSourceFilter {
     }
 
     @Override
-    public boolean matches(final String wcRoot, final List<String> relativePaths, final String commitComment) {
-        return this.f1.matches(wcRoot, relativePaths, commitComment)
-            && this.f2.matches(wcRoot, relativePaths, commitComment);
+    public boolean matches(
+            final String wcRoot,
+            final List<String> relativePaths,
+            final String commitComment,
+            final PasswordManager passwords) throws Exception {
+        return this.f1.matches(wcRoot, relativePaths, commitComment, passwords)
+            && this.f2.matches(wcRoot, relativePaths, commitComment, passwords);
     }
 
 }
