@@ -45,6 +45,7 @@ import org.xml.sax.SAXException;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
 import com.puppycrawl.tools.checkstyle.PropertiesExpander;
+import com.puppycrawl.tools.checkstyle.ThreadModeSettings;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
@@ -94,8 +95,11 @@ public class CheckstyleSource extends ChecklistItemSource {
         this.removeFilteredChecks(config);
         final byte[] filteredConfig = this.serializeXml(config);
 
-        return ConfigurationLoader.loadConfiguration(new InputSource(new ByteArrayInputStream(filteredConfig)),
-                new PropertiesExpander(System.getProperties()), true);
+        return ConfigurationLoader.loadConfiguration(
+                new InputSource(new ByteArrayInputStream(filteredConfig)),
+                new PropertiesExpander(System.getProperties()),
+                ConfigurationLoader.IgnoredModulesOptions.OMIT,
+                new ThreadModeSettings(1, 1));
     }
 
     private Document loadOriginalXmlConfig(final String wcRoot)
