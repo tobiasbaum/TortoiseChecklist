@@ -31,7 +31,7 @@ dependencies {
 task noCyclicDependencies(type: JavaExec) {
     main = 'classycle.dependency.DependencyChecker'
     classpath = configurations.classycle
-    args '-dependencies=check absenceOfPackageCycles > 1 in *', "${project.buildDir}/classes/main"
+    args '-dependencies=check absenceOfPackageCycles > 1 in *', "${project.buildDir}/classes/java/main"
 }
 check.dependsOn noCyclicDependencies
 
