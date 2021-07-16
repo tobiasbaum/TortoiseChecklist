@@ -55,9 +55,24 @@ public class TortoiseChecklist {
     private static final String LOGDIR_PROPERTY = "tortoisechecklist.statistic.directory";
 
     public static void main(final String[] args) {
-        if (args.length != 4) {
-            JOptionPane.showMessageDialog(null, "Muss als TortoiseSVN client side hook aufgerufen werden");
+        final String pathListArg;
+        final String messageFileArg;
+        final String cwdArg;
+        final boolean relativize;
+        if (args.length == 4) {
+            pathListArg = args[0];
+            messageFileArg = args[2];
+            cwdArg = args[3];
+            relativize = true;
+        } else if (args.length == 3) {
+            pathListArg = args[0];
+            messageFileArg = args[1];
+            cwdArg = args[2];
+            relativize = false;
+        } else {
+            JOptionPane.showMessageDialog(null, "Muss als TortoiseSVN oder TortoiseGit client side hook aufgerufen werden");
             System.exit(0);
+            return;
         }
 
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -70,16 +85,16 @@ public class TortoiseChecklist {
         try {
             final StatisticLogger logger = createLogger();
 
-            final List<String> rawPaths = readPathList(args[0]);
+            final List<String> rawPaths = readPathList(pathListArg);
             final String wcRoot;
             if (rawPaths.isEmpty()) {
-                wcRoot = args[3];
+                wcRoot = cwdArg;
             } else {
                 wcRoot = determineWcRoot(rawPaths.get(0));
             }
-            final List<String> paths = makeRelativeToWc(wcRoot, rawPaths);
+            final List<String> paths = relativize ? makeRelativeToWc(wcRoot, rawPaths) : rawPaths;
 
-            final String message = readUtfFile(args[2]);
+            final String message = readUtfFile(messageFileArg);
             logger.log("message", message);
             logger.log("fileCount", Integer.toString(paths.size()));
 
@@ -230,10 +245,10 @@ public class TortoiseChecklist {
     }
 
     private static String determineWcRoot(final String pathInWc) {
-        File cur = new File(pathInWc);
+        File cur = new File(pathInWc).getAbsoluteFile();
         File potentialWc = null;
         do {
-            if (containsSvnDir(cur)) {
+            if (containsSvnOrGitDir(cur)) {
                 potentialWc = cur;
             } else {
                 if (potentialWc != null) {
@@ -244,16 +259,19 @@ public class TortoiseChecklist {
             }
             cur = cur.getParentFile();
         } while (cur != null);
+        if (potentialWc == null) {
+            throw new RuntimeException("found no wc above " + pathInWc);
+        }
         return potentialWc.toString();
     }
 
-    private static boolean containsSvnDir(final File cur) {
+    private static boolean containsSvnOrGitDir(final File cur) {
         final String[] content = cur.list();
         if (content == null) {
             return false;
         }
         for (final String filename : content) {
-            if (filename.equals(".svn")) {
+            if (filename.equals(".svn") || filename.equals(".git")) {
                 return true;
             }
         }
