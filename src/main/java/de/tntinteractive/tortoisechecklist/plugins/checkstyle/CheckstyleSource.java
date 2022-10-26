@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -95,9 +96,11 @@ public class CheckstyleSource extends ChecklistItemSource {
         this.removeFilteredChecks(config);
         final byte[] filteredConfig = this.serializeXml(config);
 
+        Properties p = new Properties(System.getProperties());
+        p.put("config_loc", new File(wcRoot, this.pathToCheckConfig).getParent());
         return ConfigurationLoader.loadConfiguration(
                 new InputSource(new ByteArrayInputStream(filteredConfig)),
-                new PropertiesExpander(System.getProperties()),
+                new PropertiesExpander(p),
                 ConfigurationLoader.IgnoredModulesOptions.OMIT,
                 new ThreadModeSettings(1, 1));
     }
